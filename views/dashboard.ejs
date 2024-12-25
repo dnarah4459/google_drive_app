@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/output.css" />
+  </head>
+  <body class="min-h-screen flex flex-col bg-[#F5F5F5]">
+    <div class="border-b-2 border-[#E5E7EB] flex p-[10px] justify-between">
+      <h1 class="font-[625] text-[24px] relative left-1">KOTAK</h1>
+      <div
+        class="rounded-full bg-black w-[35px] relative right-1 cursor-pointer"
+      >
+        <h1 class="text-white absolute top-[15%] left-[18%]" id="profileName">
+          <%- currentUser.firstName.charAt(0).toUpperCase() %><%-
+          currentUser.lastName.charAt(0).toUpperCase() %>
+        </h1>
+
+        <div
+          id="dropdownMenu"
+          class="hidden absolute top-10 right-0 bg-white rounded-lg shadow-lg p-4 z-40"
+        >
+          <p class="font-semibold text-gray-700">
+            <%- currentUser.firstName %> <%- currentUser.lastName %>
+          </p>
+          <p class="text-sm text-gray-500"><%- currentUser.email %></p>
+          <a
+            href="/dashboard"
+            class="block text-gray-700 hover:bg-gray-200 rounded-md mt-3"
+            >My Drive</a
+          >
+          <a
+            href="/logout"
+            class="block text-gray-700 hover:bg-gray-200 rounded-md mt-1"
+            >Sign Out</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-grow flex">
+      <div class="flex flex-col border-r-2 p-4 gap-8 pt-6 px-9 pr-10">
+        <div class="flex gap-5 cursor-pointer">
+          <div class="flex-shrink-0">
+            <img src="./svg/google-drive.svg" alt="" class="w-[28px]" />
+          </div>
+          <h1 class="font-[550] text-[16px]">My Drive</h1>
+        </div>
+
+        <div class="flex cursor-pointer flex-col">
+          <div class="flex gap-4">
+            <div class="show-user-folders-btn flex-shrink-0">
+              <img src="./svg/folder.svg" alt="" class="w-[28px]" />
+            </div>
+            <h1 class="font-[550] text-[16px]">
+              <%- currentUser.firstName %> <%- currentUser.lastName %>
+            </h1>
+          </div>
+
+          <div class="hidden user-folders-div mt-2 space-y-2">
+            <% if (userFolders.length > 0) { %> <% userFolders.forEach(folder =>
+            { %>
+            <a
+              class="flex items-center gap-3 p-1 bg-white rounded-md shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+              href="/dashboard/<%=folder.id%>"
+            >
+              <div
+                class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-sm"
+              >
+                <img
+                  src="./svg/folder.svg"
+                  alt="Folder"
+                  class="w-5 h-5 text-blue-600"
+                />
+              </div>
+              <span class="text-sm font-medium text-gray-800 truncate w-36"
+                ><%= folder.name %></span
+              >
+            </a>
+            <% }) %> <% } else { %>
+            <p class="text-xs text-gray-500 relative left-[2px] top-2">
+              No folders available.
+            </p>
+            <% } %>
+          </div>
+
+          
+        </div>
+
+        <div class="flex gap-5 cursor-pointer">
+          <div class="flex-shrink-0">
+            <img src="./svg/logout.svg" alt="" class="w-[28px]" />
+          </div>
+          <a class="font-[550] text-[16px]" href="/logout">Sign Out</a>
+        </div>
+      </div>
+
+      <div class="flex-grow flex flex-col">
+        <h1 class="m-[8px] text-[15px] relative left-1 font-[500]">
+          <%- currentUser.firstName %> <%- currentUser.lastName %>
+        </h1>
+        <div class="flex gap-3 m-2">
+          <button
+            class="p-[9px] px-[17px] bg-[#235b90] rounded-[8px] text-white text-[15px] font-[500] hover:bg-[#1a4872] transition duration-300 new-folder-btn"
+          >
+            New Folder
+          </button>
+          <button
+            class="p-[9px] px-[17px] bg-[#235b90] rounded-[8px] text-white text-[15px] font-[500] hover:bg-[#1a4872] transition duration-300 new-file-btn"
+          >
+            New File
+          </button>
+        </div>
+
+        <table class="w-full table-auto relative top-3">
+          <thead>
+            <tr class="text-left bg-gray-200">
+              <th class="px-4 py-2">Name</th>
+              <th class="px-4 py-2">Created At</th>
+              <th class="px-4 py-2">File Size</th>
+              <th class="px-4 py-2">Type</th>
+              <th class="px-4 py-2">Action 1</th>
+              <th class="px-4 py-2">Action 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% userFolders.forEach((folder) => { %>
+            <tr
+              class="border-b hover:bg-gray-200 cursor-pointer relative"
+              data-folder-id="<%= folder.id %>"
+            >
+              <td class="px-4 py-2 flex gap-[7px]" onclick="">
+                <img src="./svg/folder_yellow.svg" alt="" class="w-[22px]" />
+                <%= folder.name%>
+              </td>
+              <td class="px-4 py-2">
+                <%= new Date(folder.createdAt).toLocaleDateString()%>
+              </td>
+              <td class="px-4 py-2"><%= folder.fileSize%></td>
+              <td class="px-4 py-2">Folder</td>
+              <td class="px-4 py-2">
+                <button class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                  Delete
+                </button>
+              </td> 
+              <td>Null</td>            
+            </tr>
+            <% }) %> <% allFiles.forEach((file) => { %>
+            <tr class="border-b hover:bg-gray-200 cursor-pointer">
+              <td class="px-4 py-2 flex gap-[7px]">
+                <img src="./svg/file.svg" alt="" class="w-[22px]" />
+                <%= file.name.split('/')[0] %>
+              </td>
+              <td class="px-4 py-2">
+                <%= new Date(file.createdAt).toLocaleDateString()%>
+              </td>
+              <td class="px-4 py-2"><%=file.fileSize%></td>
+              <td class="px-4 py-2">File</td>
+              <td class="px-4 py-2">
+                <button class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                  Delete
+                </button>
+              </td>
+              <td class="px-4 py-2">
+                <button class="download-btn text-blue-600 hover:text-white hover:bg-blue-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                  Download
+                </button>
+              </td>
+            </tr>all
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div
+      id="modal-overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden"
+    ></div>
+
+    <div
+      id="new-folder-form"
+      class="absolute flex inset-0 justify-center items-center hidden"
+    >
+      <form
+        method="POST"
+        action="/new-folder"
+        class="flex flex-col p-6 bg-white rounded-lg shadow-lg w-96"
+        id="actual-form"
+      >
+        <div class="text-xl font-semibold mb-4">Create New Folder</div>
+        <div class="flex flex-col gap-2 mb-4">
+          <label for="folder-name" class="text-sm font-medium"
+            >Folder Name</label
+          >
+          <input
+            name="folder_name"
+            type="text"
+            id="folder-name"
+            class="p-2 border border-gray-300 rounded text-[14px]"
+            required
+          />
+        </div>
+        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">
+          + Create New Folder
+        </button>
+        <button
+          type="button"
+          id="close-modal"
+          class="mt-4 text-gray-500 mr-auto py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-100"
+        >
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <div
+      id="new-file-form"
+      class="absolute flex inset-0 justify-center items-center bg-gray-500 bg-opacity-50 hidden"
+    >
+      <form
+        method="POST"
+        id="actual-new-file-form"
+        action="/new-file"
+        enctype="multipart/form-data"
+        class="flex flex-col p-6 bg-white rounded-lg shadow-lg w-96 space-y-4"
+      >
+        <div class="text-xl font-semibold mb-4 text-center">Upload a File</div>
+        <div class="flex flex-col gap-2">
+          <label for="file_name" class="text-sm font-medium text-gray-700"
+            >File Name</label
+          >
+          <input
+            type="text"
+            id="file_name"
+            name="file_name"
+            class="border border-gray-300 p-2 rounded-md text-gray-700"
+          />
+          <label for="fileUpload" class="text-sm font-medium text-gray-700"
+            >File Input</label
+          >
+          <input
+            type="file"
+            id="fileUpload"
+            name="file"
+            class="border border-gray-300 p-2 rounded-md text-gray-700"
+            required
+          />
+        </div>
+        <div class="flex justify-between items-center">
+          <button
+            type="submit"
+            class="bg-blue-600 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-500 transition"
+          >
+            Upload File
+          </button>
+        </div>
+        <div class="flex justify-between items-center mt-4">
+          <button
+            type="button"
+            class="text-gray-500 mr-auto py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-100 close-file-modal-btn"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const newFolderBtn = document.querySelector(".new-folder-btn");
+      const newFolderForm = document.getElementById("new-folder-form");
+      const modalOverlay = document.getElementById("modal-overlay");
+      const closeModalBtn = document.getElementById("close-modal");
+      const actualForm = document.getElementById("actual-form");
+      const newFileForm = document.getElementById("new-file-form");
+      const actualNewFileForm = document.getElementById("actual-new-file-form");
+      const newFileBtn = document.querySelector(".new-file-btn");
+      const closeFileModalBtn = document.querySelector(".close-file-modal-btn");
+      const userFoldersDiv = document.querySelector(".user-folders-div");
+      const showAllUserFolderBtn = document.querySelector(
+        ".show-user-folders-btn"
+      );
+
+      const profileName = document.getElementById("profileName");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      window.addEventListener("click", (event) => {
+        if (!event.target.closest(".relative")) {
+          dropdownMenu.classList.add("hidden");
+        }
+      });
+
+      profileName.addEventListener("click", () => {
+        dropdownMenu.classList.toggle("hidden");
+      });
+
+      showAllUserFolderBtn.addEventListener("click", () => {
+        if (userFoldersDiv.classList.contains("hidden")) {
+          userFoldersDiv.classList.remove("hidden");
+        } else {
+          userFoldersDiv.classList.add("hidden");
+        }
+      });
+
+      newFileBtn.addEventListener("click", () => {
+        newFileForm.classList.remove("hidden");
+        modalOverlay.classList.remove("hidden");
+      });
+
+      newFolderBtn.addEventListener("click", () => {
+        newFolderForm.classList.remove("hidden");
+        modalOverlay.classList.remove("hidden");
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        newFolderForm.classList.add("hidden");
+        modalOverlay.classList.add("hidden");
+        actualForm.reset();
+      });
+
+      closeFileModalBtn.addEventListener("click", () => {
+        newFileForm.classList.add("hidden");
+        modalOverlay.classList.add("hidden");
+      });
+
+      actualNewFileForm.addEventListener("submit", () => {
+        newFileForm.classList.add("hidden");
+        modalOverlay.classList.add("hidden");
+      });
+
+      document.querySelectorAll("tr[data-folder-id]").forEach((row) => {
+        row.addEventListener("click", function () {
+          const folderId = this.getAttribute("data-folder-id");
+          window.location.href = `/dashboard/${folderId}`;
+        });
+      });
+
+      //If I hover over a folder or file, I need it to show me a delete file . 
+
+    </script>
+  </body>
+</html>

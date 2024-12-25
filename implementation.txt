@@ -1,0 +1,112 @@
+positioned relative to the viewport and stays fixed when the page is scrolled. 
+absolute: positoed relative to the nearest positoed ancestor relative to the html eleent. 
+
+relative
+
+
+we need to add the file to 
+
+prisma client will expose CRUD and more queries fro the defined modesl. 
+
+once prisma client has been generated, you can import it in your code and send queries to your database. 
+
+
+once prisma client has been generated, 
+
+once the primsa client has been gnerated, you can import it in your code and send qeureis to your database,. 
+
+
+all prisma cleint queires return plain old JavaScript objects. 
+
+there are two ways for getting your data model into the prisma schema. 
+
+Typical Prisma ORM workflows:
+-> there are two ways for getting your data model into the primsa shcmea. 
+
+prisma migrate: 
+-> manually adjust the rpisma shcema data amdoel
+-> migrate your development atabase using the prima migtrate dev CLI command 
+-> use prisma client in your appliaction code to access
+
+
+1. make local changes to your prisma shcema
+2. prisma migrate dev
+    1. generates migration.sql
+    2. updated database schema  
+    3. generate the rpisma client 
+
+3. push priam schema nd migratiuon.sql to a report
+
+
+the primsa scham is the main mehtod of configruation for the prisma ORM setup. it consist of thefollowing parts. 
+data source: specify the fetual of the data soruce that data
+whenver a prisma commadn is invoked, the CLI typically reads osme informitno form teh schema 
+
+prisma generate: reads all above mentioned informated from 
+
+
+A common approach is to store the file in the filesystem or a cloud storage service. 
+A commona appraoch is to store the file in the file system or a cloud storage service, suhc as Amazon S3 or Google Cloud Storage and then save the files metadata in the relational database. 
+
+A common approach is to store the file in the filesystem or a cloud storage service (AmazonS3 or Google Cloud Storage) and then save the file's metadata in the relational database. 
+A common approach is to store the file in the file system and then 
+
+Amazon S3 (simple sotrage service) is an object sotrage seve that provieds scablabe high scpped sotrage for data such as documents, images, videos, backaups and other files.
+
+S3 is widley used to store and retrive ata om anywher ein the web
+
+a bucket is container fo you w
+
+when you upload fiels to amazon S3, they get sotred in buckets. A bucket acts like a container or folder in which you files known as objects are kept. 
+
+when you upload files to Amazon S3, they get soted in sby
+
+a bucket acts like a container or folder in which your files known as objects are kept. 
+
+
+once a bucket is created, you ca uplaod files (images, document, videos) into it. 
+these files are called obectjes in s3. 
+
+
+
+
+files can be any sort of media file. 
+
+folders: 
+-> folders are a way to organize files (just like on your computer)
+you can store files in whichever folder structure suits your project. 
+
+buckets are distinct containers for fiels and folers 
+
+
+You can use Supabase Storage to store images, videos, documents and any other file tpes. 
+
+You can create a bucket using the Supabase Dashboard. 
+
+
+Users will generally upload, download, or manage fiels inside those buckets. they will NOT be creating buckets,. 
+
+
+only the backend has the ncessary permission to create bucwkets. backaups
+buckets can be accss but he app;s users absed on tyou defined .
+
+
+users should not create buckets. backend should create the bucket once 
+
+
+Only the backaned (or the server) should ahve the persmission to crete and manage buckes 
+
+RLS enforeces additoinala ccess control beyon just having an API key, 
+
+when you try to create a bucket usingi the api, IT CHECKS THE ASSOICATES rls POCKIES FO THE SOTRAGE.BUCKETS TABLE TO DETERMINE IF YOUR api KEY IS AUTHEOE
+
+RLS enforeces additonal acces ontrl beyon just having an API ke 
+
+
+chceks the asosicates RLS polcies for the sotage .buckts tbale to determine if your aPI key is autheotx persfom the aciton
+
+baiscally how this works is that 
+
+whenver the userc reates a new folder or file, it should pop up on the dahsboard. 
+
+Row level security (RLS) in Supabase allow you to define polites 

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="./styles/output.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   </head>
   <body class="min-h-screen flex flex-col bg-[#F5F5F5]">
     <div class="border-b-2 border-[#E5E7EB] flex p-[10px] justify-between">
@@ -84,8 +85,6 @@
             </p>
             <% } %>
           </div>
-
-          
         </div>
 
         <div class="flex gap-5 cursor-pointer">
@@ -140,17 +139,20 @@
               <td class="px-4 py-2"><%= folder.fileSize%></td>
               <td class="px-4 py-2">Folder</td>
               <td class="px-4 py-2">
-                <button class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                <a
+                  class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300"
+                  href="/delete-folder/<%= folder.id %>"
+                >
                   Delete
-                </button>
-              </td> 
-              <td>Null</td>            
+                </a>
+              </td>
+              <td>Null</td>
             </tr>
             <% }) %> <% allFiles.forEach((file) => { %>
             <tr class="border-b hover:bg-gray-200 cursor-pointer">
               <td class="px-4 py-2 flex gap-[7px]">
                 <img src="./svg/file.svg" alt="" class="w-[22px]" />
-                <%= file.name.split('/')[0] %>
+                <%= file.name.split('_')[0] %>
               </td>
               <td class="px-4 py-2">
                 <%= new Date(file.createdAt).toLocaleDateString()%>
@@ -158,16 +160,22 @@
               <td class="px-4 py-2"><%=file.fileSize%></td>
               <td class="px-4 py-2">File</td>
               <td class="px-4 py-2">
-                <button class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                <a
+                  class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300"
+                  href = "/delete-file/<%= file.id %>"
+                >
                   Delete
-                </button>
+              </a>
               </td>
               <td class="px-4 py-2">
-                <button class="download-btn text-blue-600 hover:text-white hover:bg-blue-600 p-2 rounded-md transition transform hover:scale-105 duration-300">
+                <button
+                  class="download-btn text-blue-600 hover:text-white hover:bg-blue-600 p-2 rounded-md transition transform hover:scale-105 duration-300"
+                  data-file-id="<%= file.id %>"
+                >
                   Download
                 </button>
               </td>
-            </tr>all
+            </tr>
             <% }) %>
           </tbody>
         </table>
@@ -268,76 +276,120 @@
     </div>
 
     <script>
-      const newFolderBtn = document.querySelector(".new-folder-btn");
-      const newFolderForm = document.getElementById("new-folder-form");
-      const modalOverlay = document.getElementById("modal-overlay");
-      const closeModalBtn = document.getElementById("close-modal");
-      const actualForm = document.getElementById("actual-form");
-      const newFileForm = document.getElementById("new-file-form");
-      const actualNewFileForm = document.getElementById("actual-new-file-form");
-      const newFileBtn = document.querySelector(".new-file-btn");
-      const closeFileModalBtn = document.querySelector(".close-file-modal-btn");
-      const userFoldersDiv = document.querySelector(".user-folders-div");
-      const showAllUserFolderBtn = document.querySelector(
-        ".show-user-folders-btn"
+      const supabaseClient = supabase.createClient(
+        "https://ratfpgqhedajbxfquhso.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhdGZwZ3FoZWRhamJ4ZnF1aHNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwMjUzMDgsImV4cCI6MjA0OTYwMTMwOH0.1sA3imdnV2_9QGl_Q7cxO1UJXwGbJ0VKglTv2GDQlpM"
       );
+      
 
-      const profileName = document.getElementById("profileName");
-      const dropdownMenu = document.getElementById("dropdownMenu");
+      document.addEventListener("DOMContentLoaded", () => {
 
-      window.addEventListener("click", (event) => {
-        if (!event.target.closest(".relative")) {
-          dropdownMenu.classList.add("hidden");
-        }
-      });
+        const downloadButtons = document.querySelectorAll(".download-btn");
+        console.log("download", downloadButtons);
+        downloadButtons.forEach((button) => {
+          button.addEventListener("click", async (event) => {
+            event.stopPropagation();
 
-      profileName.addEventListener("click", () => {
-        dropdownMenu.classList.toggle("hidden");
-      });
+            const clickedBtn = event.currentTarget;
+            const fileId = clickedBtn.getAttribute("data-file-id");
+            const response = await fetch(
+              `http://localhost:4000/file-information/${fileId}`
+            );
+            const supabase_location = await response.json();
+            const supabaseString = supabase_location.supabaseLocation;
+            const { data, error } = await supabaseClient.storage
+              .from("files")
+              .download(supabaseString);
+            
+            downloadBlob(data, "fwef");
+          });
+        });
 
-      showAllUserFolderBtn.addEventListener("click", () => {
-        if (userFoldersDiv.classList.contains("hidden")) {
-          userFoldersDiv.classList.remove("hidden");
-        } else {
-          userFoldersDiv.classList.add("hidden");
-        }
-      });
+        const newFolderBtn = document.querySelector(".new-folder-btn");
+        const newFolderForm = document.getElementById("new-folder-form");
+        const modalOverlay = document.getElementById("modal-overlay");
+        const closeModalBtn = document.getElementById("close-modal");
+        const actualForm = document.getElementById("actual-form");
+        const newFileForm = document.getElementById("new-file-form");
+        const actualNewFileForm = document.getElementById(
+          "actual-new-file-form"
+        );
+        const newFileBtn = document.querySelector(".new-file-btn");
+        const closeFileModalBtn = document.querySelector(
+          ".close-file-modal-btn"
+        );
+        const userFoldersDiv = document.querySelector(".user-folders-div");
+        const showAllUserFolderBtn = document.querySelector(
+          ".show-user-folders-btn"
+        );
 
-      newFileBtn.addEventListener("click", () => {
-        newFileForm.classList.remove("hidden");
-        modalOverlay.classList.remove("hidden");
-      });
+        const profileName = document.getElementById("profileName");
+        const dropdownMenu = document.getElementById("dropdownMenu");
 
-      newFolderBtn.addEventListener("click", () => {
-        newFolderForm.classList.remove("hidden");
-        modalOverlay.classList.remove("hidden");
-      });
+        window.addEventListener("click", (event) => {
+          if (!event.target.closest(".relative")) {
+            dropdownMenu.classList.add("hidden");
+          }
+        });
 
-      closeModalBtn.addEventListener("click", () => {
-        newFolderForm.classList.add("hidden");
-        modalOverlay.classList.add("hidden");
-        actualForm.reset();
-      });
+        profileName.addEventListener("click", () => {
+          dropdownMenu.classList.toggle("hidden");
+        });
 
-      closeFileModalBtn.addEventListener("click", () => {
-        newFileForm.classList.add("hidden");
-        modalOverlay.classList.add("hidden");
-      });
+        showAllUserFolderBtn.addEventListener("click", () => {
+          if (userFoldersDiv.classList.contains("hidden")) {
+            userFoldersDiv.classList.remove("hidden");
+          } else {
+            userFoldersDiv.classList.add("hidden");
+          }
+        });
 
-      actualNewFileForm.addEventListener("submit", () => {
-        newFileForm.classList.add("hidden");
-        modalOverlay.classList.add("hidden");
-      });
+        newFileBtn.addEventListener("click", () => {
+          newFileForm.classList.remove("hidden");
+          modalOverlay.classList.remove("hidden");
+        });
 
-      document.querySelectorAll("tr[data-folder-id]").forEach((row) => {
-        row.addEventListener("click", function () {
-          const folderId = this.getAttribute("data-folder-id");
-          window.location.href = `/dashboard/${folderId}`;
+        newFolderBtn.addEventListener("click", () => {
+          newFolderForm.classList.remove("hidden");
+          modalOverlay.classList.remove("hidden");
+        });
+
+        closeModalBtn.addEventListener("click", () => {
+          newFolderForm.classList.add("hidden");
+          modalOverlay.classList.add("hidden");
+          actualForm.reset();
+        });
+
+        closeFileModalBtn.addEventListener("click", () => {
+          newFileForm.classList.add("hidden");
+          modalOverlay.classList.add("hidden");
+        });
+
+        actualNewFileForm.addEventListener("submit", () => {
+          newFileForm.classList.add("hidden");
+          modalOverlay.classList.add("hidden");
+        });
+
+        document.querySelectorAll("tr[data-folder-id]").forEach((row) => {
+          row.addEventListener("click", function () {
+            const folderId = this.getAttribute("data-folder-id");
+            window.location.href = `/dashboard/${folderId}`;
+          });
         });
       });
 
-      //If I hover over a folder or file, I need it to show me a delete file . 
-
+      function downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName || "download";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
     </script>
   </body>
 </html>
+
+<!--Unlike anchor tags, buttons do not have built-in behvairo for navaigation to a new URL or sending requests to teh server. -->

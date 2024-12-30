@@ -110,3 +110,31 @@ baiscally how this works is that
 whenver the userc reates a new folder or file, it should pop up on the dahsboard. 
 
 Row level security (RLS) in Supabase allow you to define polites 
+
+
+The browser handles the download from Supabase. 
+The browser itself handles the download from Supabase. 
+The code hat actually performs the file donwload runs in the browser. even if you are using EJS on the server. 
+
+the code that actually performs the file download runs in the browser
+when you render that EJS file in your Node app. 
+
+The code that actually performs the file downlaod runs in the browser. 
+
+The code that actually performs the file download runs in the browser, even if you are using EJS on the server. 
+the user browser gets the finied HTML the server generated. 
+the user's browser documents does not see your EJS code directly.   
+instead, it gets the finisehd HTML from the server generated. 
+That HTML can cont
+
+the download request happens form the browser dircetoyl to supabse stroage. 
+the don
+
+EJS
+
+
+what the browser is doing vs what the node server is doing. 
+
+what the browser is doing vs what the node server is doing
+what the browser is doing vs what the node server is doing
+

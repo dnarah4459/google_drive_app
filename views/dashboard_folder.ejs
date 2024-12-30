@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/styles/output.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   </head>
 
   <body class="min-h-screen flex flex-col bg-[#F5F5F5]">
@@ -36,6 +37,11 @@
             href="/logout"
             class="block text-gray-700 hover:bg-gray-200 rounded-md mt-1"
             >Sign Out</a
+          >
+          <a
+            href="/list-root"
+            class="block text-gray-700 hover:bg-gray-200 rounded-md mt-1"
+            >list root</a
           >
         </div>
       </div>
@@ -102,7 +108,7 @@
             <tr class="border-b hover:bg-gray-200 cursor-pointer">
               <td class="px-4 py-2 flex gap-[7px]">
                 <img src="/svg/file.svg" alt="" class="w-[22px]" />
-                <%= file.name.split('/')[0]%>
+                <%= file.name.split('_')[0]%>
               </td>
               <td class="px-4 py-2">
                 <%= new Date(file.createdAt).toLocaleDateString()%>
@@ -110,15 +116,17 @@
               <td class="px-4 py-2"><%=file.fileSize%></td>
               <td class="px-4 py-2">File</td>
               <td class="px-4 py-2">
-                <button
+                <a
                   class="delete-btn text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md transition transform hover:scale-105 duration-300"
+                  href="/delete-file-folder/<%=file.id%>/<%=folder.id%>"
                 >
                   Delete
-                </button>
+                </a>
               </td>
               <td class="px-4 py-2">
                 <button
                   class="download-btn text-blue-600 hover:text-white hover:bg-blue-600 p-2 rounded-md transition transform hover:scale-105 duration-300"
+                  data-file-id="<%= file.id %>"
                 >
                   Download
                 </button>
@@ -188,6 +196,31 @@
     </div>
 
     <script>
+      const supabaseClient = supabase.createClient(
+        "https://ratfpgqhedajbxfquhso.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhdGZwZ3FoZWRhamJ4ZnF1aHNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwMjUzMDgsImV4cCI6MjA0OTYwMTMwOH0.1sA3imdnV2_9QGl_Q7cxO1UJXwGbJ0VKglTv2GDQlpM"
+      );
+
+      const downloadButtons = document.querySelectorAll(".download-btn");
+      downloadButtons.forEach((button) => {
+        button.addEventListener("click", async (event) => {
+          event.stopPropagation();
+
+          const clickedBtn = event.currentTarget;
+          const fileId = clickedBtn.getAttribute("data-file-id");
+          const response = await fetch(
+            `http://localhost:4000/file-information/${fileId}`
+          );
+          const supabase_location = await response.json();
+          const supabaseString = supabase_location.supabaseLocation;
+          const { data, error } = await supabaseClient.storage
+            .from("files")
+            .download(supabaseString);
+
+          downloadBlob(data, "fwef");
+        });
+      });
+
       const modalOverlay = document.getElementById("modal-overlay");
       const closeModalBtn = document.getElementById("close-modal");
       const actualForm = document.getElementById("actual-form");
@@ -236,6 +269,17 @@
         newFileForm.classList.add("hidden");
         modalOverlay.classList.add("hidden");
       });
+
+      function downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName || "download";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
     </script>
   </body>
 </html>

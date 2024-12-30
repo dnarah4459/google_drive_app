@@ -29,15 +29,7 @@ const supabaseFunctions = {
     const { data, error } = await supabase.storage.from('files').deleteFile(filePath); 
     return data; 
   },
-  downloadFile: async (filePath) => {
-      const { data, error } = await supabase.storage.from("files").download(filePath)
-      const fileURL = URL.createObjectURL(data); 
-      const link = document.createElement('a'); 
-      link.href = fileURL;
-      link.download = filePath.split('/').pop(); 
-      link.click(); 
-      URL.revokeObjectURL(fileURL);
-  }
+  
 };
 
-module.exports = supabaseFunctions;
+module.exports = {supabaseFunctions, supabase};
